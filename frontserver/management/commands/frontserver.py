@@ -31,12 +31,12 @@ class Command(BaseRunserverCommand):
 
     def lock_pid(self):
         open(LOCKFILE, 'a').close()
-        self.stdout.write('[GulpServer] Gulp started')
+        self.stdout.write('Gulp started')
 
     def unlock_pid(self):
         if hooks.exit_code == None:
             if self.is_running():
-                self.stdout.write('[GulpServer] Gulp stopped')
+                self.stdout.write('Gulp stopped')
                 os.remove(LOCKFILE)
 
     def is_running(self):
@@ -46,7 +46,7 @@ class Command(BaseRunserverCommand):
         proc_args = dict(shell=True, stdin=subprocess.PIPE,
             stdout=self.stdout, stderr=self.stderr)
 
-        task_name = app + ':build' if app else 'build'
+        task_name = app if app else 'default'
         subprocess.Popen(['gulp ' + task_name], **proc_args)
 
         task_name = app + ':watch' if app else 'watch'
