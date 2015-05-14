@@ -1,3 +1,4 @@
+from frontserver.settings import BUILDER_COMMAND, BUILDER_ARGS
 from frontserver.utils import ExitHooks
 from django.conf import settings
 import os, atexit
@@ -46,8 +47,10 @@ class Command(BaseRunserverCommand):
         proc_args = dict(shell=True, stdin=subprocess.PIPE,
             stdout=self.stdout, stderr=self.stderr)
 
-        task_name = app if app else 'default'
-        subprocess.Popen(['gulp ' + task_name], **proc_args)
+        task = app if app else 'default'
+        command = ' '.join([BUILDER_COMMAND, task, BUILDER_ARGS])
+        subprocess.Popen([command], **proc_args)
 
-        task_name = app + ':watch' if app else 'watch'
-        subprocess.Popen(['gulp ' + task_name], **proc_args)
+        task = app + ':watch' if app else 'watch'
+        command = ' '.join([BUILDER_COMMAND, task, BUILDER_ARGS])
+        subprocess.Popen([command], **proc_args)
