@@ -2,6 +2,12 @@
 
 Run grunt/gulp watcher and django server with a single command.
 
+## Install
+
+```
+pip install django-frontserver
+```
+
 ## Usage
 
 Add `frontserver` to `INSTALLED_APPS` and run:
