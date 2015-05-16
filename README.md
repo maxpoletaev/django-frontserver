@@ -13,23 +13,23 @@ pip install django-frontserver
 Add `frontserver` to `INSTALLED_APPS` and run:
 
 ```sh
-python manage.py frontserver [--app=app_name]
+$ python manage.py frontserver [--app=app_name] [runserver-args]
 ```
 
 This is the same as:
 
 ```sh
-python manage.py runserver
-gulp default
-gulp watch
+$ python manage.py runserver
+$ gulp default
+$ gulp watch
 ```
 
 Or this if `--app=blog`:
 
 ```sh
-python manage.py runserver
-gulp blog:watch
-gulp blog
+$ python manage.py runserver
+$ gulp blog:watch
+$ gulp blog
 ```
 
 ## Configuration

@@ -17,18 +17,18 @@ hooks.hook()
 
 
 class Command(BaseRunserverCommand):
-    help = 'Run static server with gulp'
+    help = 'Run static server with your frontend task runner'
 
     def add_arguments(self, parser):
-        parser.add_argument('--gulp-app', dest='gulp_app', default=None,
-            help='Run gulp only for this app.')
+        parser.add_argument('--app', dest='app', default=None,
+            help='Run watch only for this app.')
         super().add_arguments(parser)
 
     def inner_run(self, *args, **options):
         atexit.register(self.unlock_pid)
 
         if not self.is_running():
-            self.run_builder(app=options['gulp_app'])
+            self.run_builder(app=options['app'])
             self.lock_pid()
 
         super().inner_run(*args, **options)
