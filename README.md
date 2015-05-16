@@ -36,7 +36,9 @@ gulp blog
 
 ```py
 FRONTSERVER = {
-    'BUILDER_COMMAND': 'gulp', # Command for run
+    'BUILDER': 'gulp', # Command for run
     'BUILDER_ARGS': '', # Additional command-line arguments
+    'DEFAULT_TASK': 'default', # Name of default task
+    'WATCH_TASK': 'watch', # Name of watch task
 }
 ```
