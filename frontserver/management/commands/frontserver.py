@@ -6,8 +6,8 @@ import subprocess
 from frontserver.settings import BUILDER, BUILDER_ARGS, \
     DEFAULT_TASK, WATCH_TASK
 
-from django.core.management.commands.runserver import \
-    BaseRunserverCommand
+from django.contrib.staticfiles.management.commands.runserver import Command \
+    as BaseRunserverCommand
 
 PROJECT_NAME = settings.ROOT_URLCONF.split('.')[0]
 LOCKFILE = '/tmp/frontserver_%s.lock' % PROJECT_NAME
