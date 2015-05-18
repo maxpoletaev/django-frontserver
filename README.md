@@ -5,7 +5,7 @@ Run grunt/gulp watcher and django server with a single command.
 ## Install
 
 ```
-pip install django-frontserver
+$ pip install django-frontserver
 ```
 
 ## Usage
@@ -13,7 +13,7 @@ pip install django-frontserver
 Add `frontserver` to `INSTALLED_APPS` and run:
 
 ```sh
-$ python manage.py frontserver [--app=app_name] [runserver-args]
+$ python manage.py frontserver [--apps=app1,app2] [--nodefault] [--nowatch] [runserver args]
 ```
 
 This is the same as:
@@ -24,12 +24,11 @@ $ gulp default
 $ gulp watch
 ```
 
-Or this if `--app=blog`:
+Or this if `--apps=blog,shop`:
 
 ```sh
 $ python manage.py runserver
-$ gulp blog:watch
-$ gulp blog
+$ gulp blog blog:watch shop shop:watch
 ```
 
 ## Configuration

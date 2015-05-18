@@ -20,15 +20,21 @@ class Command(BaseRunserverCommand):
     help = 'Run static server with your frontend task runner'
 
     def add_arguments(self, parser):
-        parser.add_argument('--app', dest='app', default=None,
-            help='Run watch only for this app.')
+        parser.add_argument('--apps', dest='apps', default=None,
+            help='Run watch only for this apps.')
+        parser.add_argument('--nodefault', action='store_true', dest='no_default',
+            default=False, help='Run server without default task.')
+        parser.add_argument('--nowatch', action='store_true', dest='no_watch',
+            default=False, help='Run server without watch tasks.')
         super().add_arguments(parser)
 
     def inner_run(self, *args, **options):
         atexit.register(self.unlock_pid)
 
         if not self.is_running():
-            self.run_builder(app=options['app'])
+            watch = not options['no_watch']
+            default = not options['no_default']
+            self.run_builder(apps=options['apps'], default=default, watch=watch)
             self.lock_pid()
 
         super().inner_run(*args, **options)
@@ -44,14 +50,28 @@ class Command(BaseRunserverCommand):
     def is_running(self):
         return os.path.isfile(LOCKFILE)
 
-    def run_builder(self, app=None):
+    def run_builder(self, apps=None, default=True, watch=True):
+        if apps:
+            apps = apps.split(',')
+
         proc_args = dict(shell=True, stdin=subprocess.PIPE,
             stdout=self.stdout, stderr=self.stderr)
 
-        task = app if app else DEFAULT_TASK
-        command = ' '.join([BUILDER, task, BUILDER_ARGS])
-        subprocess.Popen([command], **proc_args)
+        tasks = []
 
-        task = app + ':' + WATCH_TASK if app else WATCH_TASK
-        command = ' '.join([BUILDER, task, BUILDER_ARGS])
+        if default:
+            if apps:
+                for app in apps:
+                    tasks.append(app)
+            else:
+                tasks.append(DEFAULT_TASK)
+
+        if watch:
+            if apps:
+                for app in apps:
+                    tasks.append(app + ':' + WATCH_TASK)
+            else:
+                tasks.append(WATCH_TASK)
+
+        command = ' '.join([BUILDER, ' '.join(tasks), BUILDER_ARGS])
         subprocess.Popen([command], **proc_args)
