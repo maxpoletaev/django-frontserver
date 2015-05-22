@@ -2,6 +2,7 @@ from frontserver.utils import ExitHooks
 from django.conf import settings
 import os, atexit
 import subprocess
+import django
 
 from frontserver.settings import BUILDER, BUILDER_ARGS, \
     DEFAULT_TASK, WATCH_TASK
@@ -75,3 +76,18 @@ class Command(BaseRunserverCommand):
 
         command = ' '.join([BUILDER, ' '.join(tasks), BUILDER_ARGS])
         subprocess.Popen([command], **proc_args)
+
+
+if django.VERSION < (1, 8):
+    from optparse import make_option
+
+    Command.option_list += (
+        make_option('--apps', dest='apps', default=None,
+            help='Run watch only for this apps.'),
+
+        make_option('--nodefault', action='store_true', dest='no_default',
+            default=False, help='Run server without default task.'),
+
+        make_option('--nowatch', action='store_true', dest='no_watch',
+            default=False, help='Run server without watch tasks.'),
+    )

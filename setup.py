@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='django-frontserver',
-    version='0.3.0',
+    version='0.3.1',
     packages=find_packages(),
     author='Maxim Poletaev',
     author_email='zenwalker2@gmail.com',
