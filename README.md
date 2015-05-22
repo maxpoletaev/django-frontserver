@@ -20,8 +20,7 @@ This is the same as:
 
 ```sh
 $ python manage.py runserver
-$ gulp default
-$ gulp watch
+$ gulp default watch
 ```
 
 Or this if `--apps=blog,shop`:
