@@ -4,11 +4,12 @@ import os, atexit
 import subprocess
 import django
 
-from frontserver.settings import BUILDER, BUILDER_ARGS, \
-    DEFAULT_TASK, WATCH_TASK
+from django.contrib.staticfiles.management.commands.runserver \
+     import Command as BaseRunserverCommand
 
-from django.contrib.staticfiles.management.commands.runserver import Command \
-    as BaseRunserverCommand
+from frontserver.settings \
+     import BUILDER, BUILDER_ARGS, DEFAULT_TASK, WATCH_TASK
+
 
 PROJECT_NAME = settings.ROOT_URLCONF.split('.')[0]
 LOCKFILE = '/tmp/frontserver_%s.lock' % PROJECT_NAME
@@ -20,13 +21,15 @@ hooks.hook()
 class Command(BaseRunserverCommand):
     help = 'Run static server with your frontend task runner'
 
+    arguments = {
+        '--apps': dict(dest='apps', default=None, help='Run only for this apps.'),
+        '--nowatch': dict(action='store_true', dest='no_watch', default=False, help='Run server without watch tasks.'),
+        '--nodefault': dict(action='store_true', dest='no_default', default=False, help='Run server without default task.'),
+    }
+
     def add_arguments(self, parser):
-        parser.add_argument('--apps', dest='apps', default=None,
-            help='Run watch only for this apps.')
-        parser.add_argument('--nodefault', action='store_true', dest='no_default',
-            default=False, help='Run server without default task.')
-        parser.add_argument('--nowatch', action='store_true', dest='no_watch',
-            default=False, help='Run server without watch tasks.')
+        for flag, args in self.arguments.items():
+            self.add_argument(flag, **args)
         super().add_arguments(parser)
 
     def inner_run(self, *args, **options):
@@ -80,14 +83,4 @@ class Command(BaseRunserverCommand):
 
 if django.VERSION < (1, 8):
     from optparse import make_option
-
-    Command.option_list += (
-        make_option('--apps', dest='apps', default=None,
-            help='Run watch only for this apps.'),
-
-        make_option('--nodefault', action='store_true', dest='no_default',
-            default=False, help='Run server without default task.'),
-
-        make_option('--nowatch', action='store_true', dest='no_watch',
-            default=False, help='Run server without watch tasks.'),
-    )
+    Command.option_list += tuple(make_option(f, **a) for f, a in Command.arguments.items())
