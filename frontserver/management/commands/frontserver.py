@@ -1,6 +1,6 @@
 from frontserver.utils import ExitHooks
 from django.conf import settings
-import os, atexit
+import os, atexit, tempfile
 import subprocess
 import django
 
@@ -12,7 +12,7 @@ from frontserver.settings \
 
 
 PROJECT_NAME = settings.ROOT_URLCONF.split('.')[0]
-LOCKFILE = '/tmp/frontserver_%s.lock' % PROJECT_NAME
+LOCKFILE = os.path.join(tempfile.gettempdir(), 'frontserver_%s.lock' % PROJECT_NAME)
 
 hooks = ExitHooks()
 hooks.hook()
@@ -78,7 +78,7 @@ class Command(BaseRunserverCommand):
                 tasks.append(WATCH_TASK)
 
         command = ' '.join([BUILDER, ' '.join(tasks), BUILDER_ARGS])
-        subprocess.Popen([command], **proc_args)
+        subprocess.Popen(command, **proc_args)
 
 
 if django.VERSION < (1, 8):
