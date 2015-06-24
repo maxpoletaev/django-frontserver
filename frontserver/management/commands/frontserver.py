@@ -29,7 +29,7 @@ class Command(BaseRunserverCommand):
 
     def add_arguments(self, parser):
         for flag, args in self.arguments.items():
-            self.add_argument(flag, **args)
+            parser.add_argument(flag, **args)
         super().add_arguments(parser)
 
     def inner_run(self, *args, **options):
